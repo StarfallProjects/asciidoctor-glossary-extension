@@ -1,16 +1,14 @@
-const Asciidoctor = require('asciidoctor');
-const asciidoctor = Asciidoctor();
-const fs = require('fs');
+const asciidoctor = require('asciidoctor')();
+const registryManual = asciidoctor.Extensions.create();
+require('./manual-preprocessor.js')(registryManual);
 
 
 const buildGloss = asciidoctor.convertFile('glossary.adoc');
-//const buildArticle = asciidoctor.convertFile('article.adoc');
+const buildArticle = asciidoctor.loadFile('article.adoc', {'extension_registry': registryManual});
+console.log(buildArticle.convert());
+
 const doc = asciidoctor.loadFile('glossary.adoc', {"catalog_assets": true, 'safe': 'safe'});
-//console.log(doc);
 
-
-//var getForCtxt = doc.getBlocks();
-//console.log(getForCtxt[0].context);
 
 // this gets terms and defs. Could put them into JSON for further use, or into arrays etc.
 //var glossTerm = doc.findBy({'context':'dlist'});
@@ -36,8 +34,7 @@ function getSection (glossTerm) {
         // But consider creating macros for this, e.g. gloss title, gloss summary, gloss long
         for(let j=0; j<glossTerm[i].getBlocks().length; j++) {
             console.log(glossTerm[i].getBlocks()[j].lines[0]); 
-        }  
-        
+        }        
     }
 };
 getSection(glossTerm);
@@ -45,4 +42,6 @@ getSection(glossTerm);
 //https://stackoverflow.com/questions/42895449/how-to-convert-array-of-arrays-to-array-of-objects-where-keys-are-taken-from-the
 // Then once in JSON, need to handle searching docs and marking up terms as part of pre-processing. Including accepting user config for first vs all vs none
 // And then handle manual user markup
+
+
 
