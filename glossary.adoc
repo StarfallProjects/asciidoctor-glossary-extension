@@ -1,0 +1,9 @@
+= Glossary
+
+== term 1
+defines term 1
+
+== term 2
+defines term 2
+
+defines term 2 some more
