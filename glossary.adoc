@@ -7,3 +7,7 @@ defines term 1
 defines term 2
 
 defines term 2 some more
+
+glossTerm:Term 1
+glossSummary:This is a short glossSummary
+glossLong:This is a lot more info

@@ -7,22 +7,23 @@ module.exports = function (registry) {
             var lines = reader.lines;
             for (let i=0; i < lines.length; i++) {
                 if(lines[i].match(/.*(gloss:\[.*?\]).*/)){
-                    var glosses = [...lines[i].matchAll(glossPattern)];
-                    for(let j=0; j<glosses.length;j++){
-                        // remove gloss:[
-                        let termSlug = glosses[j][0].substring(7);
-                        // remove the trailing ]
-                        termSlug = termSlug.substring(0, termSlug.length-1);
-                        // make lowercase
-                        termSlug = termSlug.toLowerCase();
-                        // replace whitespace with hyphens
-                        termSlug = termSlug.replace(/\s/g, '-');
-                        console.log(termSlug);
-                        console.log(lines[i]);
-                        // TODO: sort out replacements. Currently this isn't doing anything, and isn't erroring either -.-
-                        lines[i].replace(RegExp("^(?:.*?gloss:){" + j + "}"), function(x){return x.replace(RegExp('gloss:' + "$"), "yo")});
-                        //`xref:glossary.adoc#${termSlug}`
-                    }                    
+                    // split lines
+                    let splitty = lines[i].split(glossPattern);
+                    splitty.forEach(function(part, index) {
+                        if(part.match(glossPattern)) {
+                            // remove gloss:[
+                            let termSlug = part.substring(7);
+                            // remove the trailing ]
+                            termSlug = termSlug.substring(0, termSlug.length-1);
+                            // make lowercase
+                            termSlug = termSlug.toLowerCase();
+                            // replace whitespace with hyphens
+                            termSlug = termSlug.replace(/\s/g, '-');
+                            splitty[index] = part.replace(/^(?:.*?gloss:)/,`xref:glossary.adoc#${termSlug}`);                            
+                        }
+                    });
+                    let newSplitty = splitty.join("");
+                    reader.lines[i] = newSplitty;
                 }
             }
             return reader;

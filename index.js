@@ -4,8 +4,8 @@ require('./manual-preprocessor.js')(registryManual);
 
 
 const buildGloss = asciidoctor.convertFile('glossary.adoc');
-const buildArticle = asciidoctor.loadFile('article.adoc', {'extension_registry': registryManual});
-console.log(buildArticle.convert());
+const buildArticle = asciidoctor.convertFile('article.adoc', {'extension_registry': registryManual});
+//console.log(buildArticle.convert());
 
 const doc = asciidoctor.loadFile('glossary.adoc', {"catalog_assets": true, 'safe': 'safe'});
 
@@ -25,16 +25,20 @@ const doc = asciidoctor.loadFile('glossary.adoc', {"catalog_assets": true, 'safe
 var glossTerm = doc.findBy({'context': 'section'}, function (section) {
     return section.getLevel() === 1;
 });
+// array of term:summary objects
+var termsObjs = [];
 function getSection (glossTerm) {
     for(i=0;i<glossTerm.length;i++) {
         // Get the section name (title), which in this case is the glossary term
-        console.log("Term: " + glossTerm[i].getName()); 
+       // console.log("Term: " + glossTerm[i].getName()); 
+        let term = glossTerm[i].getName();
         // then get the child blocks' contents
         // Note: if you want just the first paragraph (perhaps as the on hover short def?), glossTerm[i].getBlocks()[0].lines[0] 
         // But consider creating macros for this, e.g. gloss title, gloss summary, gloss long
         for(let j=0; j<glossTerm[i].getBlocks().length; j++) {
-            console.log(glossTerm[i].getBlocks()[j].lines[0]); 
-        }        
+           // console.log(glossTerm[i].getBlocks()[j].lines[0]); 
+        }    
+        //termsObjs.push({term:summary});    
     }
 };
 getSection(glossTerm);
